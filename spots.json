@@ -1,0 +1,19 @@
+{
+  "spots": [
+    {
+      "id": "wisata-1",
+      "name": "Wisata 1",
+      "link": "https://search.google.com/local/writereview?placeid=YOUR_PLACE_ID_1"
+    },
+    {
+      "id": "wisata-2",
+      "name": "Wisata 2",
+      "link": "https://search.google.com/local/writereview?placeid=YOUR_PLACE_ID_2"
+    },
+    {
+      "id": "wisata-3",
+      "name": "Wisata 3",
+      "link": "https://search.google.com/local/writereview?placeid=YOUR_PLACE_ID_3"
+    }
+  ]
+}
