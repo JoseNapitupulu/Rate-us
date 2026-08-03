@@ -15,9 +15,11 @@
     --ink: #202124;
     --muted: #5f6368;
     --card-bg: rgba(255, 255, 255, 0.92);
+    --shadow: 0 24px 60px -20px rgba(32, 33, 36, 0.28);
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
+  [hidden] { display: none !important; }
 
   body {
     font-family: "Google Sans", "Segoe UI", Roboto, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
@@ -184,6 +186,92 @@
   }
   .empty a { color: var(--google-blue); }
 
+  /* ===== Kartu detail per wisata (dibuka via #id) ===== */
+  .card {
+    position: relative;
+    z-index: 1;
+    max-width: 520px;
+    width: 100%;
+    margin: 0 auto;
+    background: var(--card-bg);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-radius: 28px;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    padding: 48px 40px 40px;
+    text-align: center;
+    animation: rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .card h1 { font-size: 38px; }
+  #spotName { display: block; margin-top: 6px; font-size: 22px; letter-spacing: -0.4px; }
+
+  .card .subtitle { font-size: 15px; margin-bottom: 24px; }
+
+  .stars {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 26px;
+    font-size: 40px;
+  }
+  .stars span {
+    color: var(--google-yellow);
+    text-shadow: 0 2px 8px rgba(251, 188, 4, 0.4);
+    animation: pop 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .stars span:nth-child(1) { animation-delay: 0.3s; }
+  .stars span:nth-child(2) { animation-delay: 0.4s; }
+  .stars span:nth-child(3) { animation-delay: 0.5s; }
+  .stars span:nth-child(4) { animation-delay: 0.6s; }
+  .stars span:nth-child(5) { animation-delay: 0.7s; }
+
+  @keyframes pop {
+    from { opacity: 0; transform: scale(0.2) rotate(-20deg); }
+    to   { opacity: 1; transform: scale(1) rotate(0deg); }
+  }
+
+  .card .btn-review {
+    width: 100%;
+    font-size: 17px;
+    padding: 18px 24px;
+    border-radius: 16px;
+  }
+
+  .hint {
+    margin-top: 16px;
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .back {
+    display: inline-block;
+    margin-top: 22px;
+    font-size: 13.5px;
+    color: var(--google-blue);
+    text-decoration: none;
+  }
+  .back:hover { text-decoration: underline; }
+
+  .not-found h1 { font-size: 64px; }
+  .not-found .subtitle { margin-bottom: 28px; }
+  .not-found .btn-home {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--google-blue), #1557b0);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: inherit;
+    border-radius: 14px;
+    padding: 14px 26px;
+    text-decoration: none;
+    box-shadow: 0 12px 28px -10px rgba(26, 115, 232, 0.6);
+    transition: transform 0.18s ease;
+  }
+  .not-found .btn-home:hover { transform: translateY(-2px); }
+
   /* Tombol kecil ke panel admin */
   .admin-gear {
     position: fixed;
@@ -230,6 +318,9 @@
   @media (max-width: 480px) {
     h1 { font-size: 34px; }
     .grid { grid-template-columns: 1fr; }
+    .card { padding: 36px 22px 30px; }
+    .card h1 { font-size: 30px; }
+    .stars { font-size: 32px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -239,7 +330,7 @@
 </head>
 <body>
 
-  <header class="hero">
+  <header class="hero" id="hero">
     <!-- Logo Google "G" -->
     <svg class="g-logo" viewBox="0 0 48 48" aria-hidden="true">
       <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
@@ -261,16 +352,60 @@
   </header>
 
   <main class="grid" id="spotGrid" aria-live="polite"></main>
-
   <p class="empty" id="emptyState" hidden></p>
 
-  <a class="admin-gear" href="admin.html" title="Panel Admin" aria-label="Panel Admin">⚙️</a>
+  <!-- Kartu detail satu wisata (dibuka lewat #wisata-1) -->
+  <main class="card" id="detailCard" hidden>
+    <svg class="g-logo" viewBox="0 0 48 48" aria-hidden="true">
+      <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+      <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+      <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+      <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+    </svg>
+    <div class="badge">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.3L12 16.8 5.8 21.2l2.4-7.3L2 9.4h7.6z"/>
+      </svg>
+      Google Reviews
+    </div>
+    <h1><span class="rate">Rate</span> <span class="us">Us</span><span id="spotName"></span></h1>
+    <p class="subtitle" id="detailSubtitle">Beri rating &amp; ulasan untuk membantu kami berkembang 🙏</p>
+    <div class="stars" aria-label="Rating 5 dari 5 bintang">
+      <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+    </div>
+    <a id="reviewBtn" class="btn-review" href="#" target="_blank" rel="noopener">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.3L12 16.8 5.8 21.2l2.4-7.3L2 9.4h7.6z"/>
+      </svg>
+      Tulis Ulasan di Google
+    </a>
+    <p class="hint">Membuka formulir ulasan resmi Google · butuh &lt; 1 menit</p>
+    <a class="back" href="./">← Semua tempat wisata</a>
+  </main>
 
+  <!-- Tampil kalau id tidak ditemukan -->
+  <main class="card not-found" id="notFoundCard" hidden>
+    <div style="font-size:52px;">⭐</div>
+    <h1>404</h1>
+    <p class="subtitle">Tempat wisata tidak ditemukan. Mungkin link-nya salah.</p>
+    <a class="btn-home" href="./">← Kembali ke Beranda</a>
+  </main>
+
+  <a class="admin-gear" href="admin.html" title="Panel Admin" aria-label="Panel Admin">⚙️</a>
   <div id="toast" class="toast" role="alert"></div>
 
 <script>
+  const hero = document.getElementById("hero");
   const grid = document.getElementById("spotGrid");
   const emptyState = document.getElementById("emptyState");
+  const detailCard = document.getElementById("detailCard");
+  const notFoundCard = document.getElementById("notFoundCard");
+  const spotNameEl = document.getElementById("spotName");
+  const detailSubtitle = document.getElementById("detailSubtitle");
+  const reviewBtn = document.getElementById("reviewBtn");
+
+  let spots = null;   // null = gagal dimuat, [] = kosong
+  let loaded = false;
 
   let toastTimer;
   function showToast(message) {
@@ -285,6 +420,30 @@
     return String(text).replace(/[&<>"']/g, (c) => ({
       "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
     }[c]));
+  }
+
+  function getHashId() {
+    const hash = location.hash.replace(/^#\/?/, "");
+    if (!hash) return null;
+    try {
+      return decodeURIComponent(hash);
+    } catch (err) {
+      return null;
+    }
+  }
+
+  async function ensureSpots() {
+    if (loaded) return spots;
+    try {
+      const res = await fetch("spots.json", { cache: "no-store" });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const data = await res.json();
+      spots = (Array.isArray(data) ? data : (data && data.spots) || []);
+    } catch (err) {
+      spots = null;
+    }
+    loaded = true;
+    return spots;
   }
 
   function makeCard(spot, index) {
@@ -302,7 +461,7 @@
         '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' +
           '<path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.3L12 16.8 5.8 21.2l2.4-7.3L2 9.4h7.6z"/>' +
         "</svg> Tulis Ulasan</a>" +
-      '<a class="page-link" href="spot.html?id=' + encodeURIComponent(spot.id || "") +
+      '<a class="page-link" href="#' + encodeURIComponent(spot.id || "") +
         '">🔗 Halaman khusus (untuk QR code)</a>';
 
     const btn = card.querySelector(".btn-review");
@@ -317,32 +476,66 @@
     return card;
   }
 
-  function showEmptyState(message) {
-    emptyState.hidden = false;
-    emptyState.innerHTML = message;
-  }
+  function showList() {
+    hero.hidden = false;
+    grid.hidden = false;
+    emptyState.hidden = true;
+    detailCard.hidden = true;
+    notFoundCard.hidden = true;
+    grid.innerHTML = "";
 
-  const EMPTY_MSG =
-    "Belum ada tempat wisata terdaftar.<br>" +
-    'Buka <a href="admin.html">Panel Admin</a> untuk menambahkan.';
-  const ERROR_MSG =
-    "⚠️ Data tempat wisata gagal dimuat.<br>" +
-    "Coba muat ulang halaman ini.";
-
-  async function loadSpots() {
-    try {
-      const res = await fetch("spots.json", { cache: "no-store" });
-      if (!res.ok) throw new Error("HTTP " + res.status);
-      const data = await res.json();
-      const spots = Array.isArray(data) ? data : (data && data.spots) || [];
-      if (!spots.length) { showEmptyState(EMPTY_MSG); return; }
-      spots.forEach((spot, i) => grid.appendChild(makeCard(spot, i)));
-    } catch (err) {
-      showEmptyState(ERROR_MSG);
+    if (spots === null) {
+      emptyState.hidden = false;
+      emptyState.innerHTML =
+        "⚠️ Data tempat wisata gagal dimuat.<br>Coba muat ulang halaman ini.";
+      return;
     }
+    if (!spots.length) {
+      emptyState.hidden = false;
+      emptyState.innerHTML =
+        "Belum ada tempat wisata terdaftar.<br>" +
+        'Buka <a href="admin.html">Panel Admin</a> untuk menambahkan.';
+      return;
+    }
+    spots.forEach((spot, i) => grid.appendChild(makeCard(spot, i)));
   }
 
-  loadSpots();
+  function showDetail(id) {
+    hero.hidden = true;
+    grid.hidden = true;
+    emptyState.hidden = true;
+    detailCard.hidden = true;
+    notFoundCard.hidden = true;
+
+    const spot = spots ? spots.find((s) => s.id === id) : null;
+    if (!spot) {
+      notFoundCard.hidden = false;
+      return;
+    }
+
+    document.title = "Rate Us \u2B50 — " + (spot.name || "Beri Ulasan");
+    spotNameEl.textContent = spot.name || "";
+    detailSubtitle.textContent =
+      "Beri rating & ulasan untuk \u201C" + (spot.name || "tempat ini") +
+      "\u201D. Pendapatmu sangat berarti! \uD83D\uDE4F";
+    reviewBtn.href = spot.link || "#";
+    reviewBtn.onclick = (e) => {
+      if (!spot.link || spot.link.includes("YOUR_PLACE_ID")) {
+        e.preventDefault();
+        showToast("⏳ Link ulasan untuk tempat ini belum diisi. Kelola di Panel Admin ya!");
+      }
+    };
+    detailCard.hidden = false;
+  }
+
+  async function render() {
+    await ensureSpots();
+    const id = getHashId();
+    if (id) showDetail(id); else showList();
+  }
+
+  window.addEventListener("hashchange", render);
+  render();
 </script>
 </body>
 </html>

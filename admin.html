@@ -191,13 +191,43 @@
   }
   .spot-item .acts { display: flex; gap: 6px; }
   .spot-item .acts button { padding: 7px 12px; font-size: 13px; border-radius: 9px; }
-  .spot-item .page-url {
-    display: block;
-    font-size: 11.5px;
-    color: var(--google-blue);
-    margin-top: 6px;
-    text-decoration: none;
+  .spot-item .link-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 8px;
   }
+  .spot-item .page-url {
+    font-size: 11.5px;
+    font-family: "Cascadia Code", Consolas, monospace;
+    color: var(--google-blue);
+    background: rgba(26, 115, 232, 0.06);
+    padding: 3px 8px;
+    border-radius: 7px;
+    word-break: break-all;
+  }
+  button.sm { padding: 6px 10px; font-size: 12px; border-radius: 8px; }
+  .spot-item .qr-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--line);
+  }
+  .spot-item .qr-row img {
+    width: 84px;
+    height: 84px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 4px;
+    background: #fff;
+    flex-shrink: 0;
+  }
+  .spot-item .qr-meta { font-size: 12px; color: var(--muted); line-height: 1.7; }
+  .spot-item .qr-meta b { color: var(--ink); }
+  .spot-item .qr-actions { display: flex; gap: 6px; margin-top: 6px; }
 
   .list-empty {
     color: var(--muted);
@@ -340,6 +370,9 @@
 
   <div id="toast" class="toast" role="alert"></div>
 
+  <!-- Library pembuat QR code (di-hosting lokal, tanpa CDN) -->
+  <script src="qrcode.min.js"></script>
+
 <script>
   /* ============================================================
      🔑 GANTI PASSWORD DI SINI
@@ -442,6 +475,9 @@
         ? '<span class="status ok">✓ link siap</span>'
         : '<span class="status warn">⚠ placeholder</span>';
 
+      const baseUrl = location.href.replace(/[?#].*$/, "").replace(/[^/]*$/, "");
+      const spotUrl = baseUrl + "#" + encodeURIComponent(spot.id);
+
       item.innerHTML =
         '<div class="top">' +
           '<span class="name">' + escapeHtml(spot.name || "Tanpa Nama") + "</span>" +
@@ -452,11 +488,38 @@
         "</div>" +
         status +
         '<p class="link">' + escapeHtml(spot.link || "") + "</p>" +
-        '<a class="page-url" href="spot.html?id=' + encodeURIComponent(spot.id) + '" target="_blank" rel="noopener">' +
-          "spot.html?id=" + escapeHtml(spot.id) + " (halaman khusus) </a>";
+        '<div class="link-row">' +
+          '<code class="page-url">#' + escapeHtml(spot.id) + "</code>" +
+          '<button class="ghost sm" data-act="copylink">📋 Salin link</button>' +
+        "</div>" +
+        '<div class="qr-row">' +
+          '<img data-qr alt="QR code ' + escapeHtml(spot.name || "") + '" />' +
+          '<div class="qr-meta">' +
+            "QR code halaman rating tempat ini<br />" +
+            '<b>#' + escapeHtml(spot.id) + "</b>" +
+            '<div class="qr-actions">' +
+              '<button class="ghost sm" data-act="downloadqr">⬇️ Unduh QR</button>' +
+            "</div>" +
+          "</div>" +
+        "</div>";
+
+      const qrImg = item.querySelector("[data-qr]");
+      const dataUrl = makeQrDataUrl(spotUrl, 480);
+      if (dataUrl) {
+        qrImg.src = dataUrl;
+      } else {
+        // Cadangan jika file qrcode.min.js belum ikut ter-upload
+        qrImg.src = "https://api.qrserver.com/v1/create-qr-code/?size=480x480&data=" +
+          encodeURIComponent(spotUrl);
+      }
 
       item.querySelector('[data-act="edit"]').addEventListener("click", () => startEdit(spot));
       item.querySelector('[data-act="del"]').addEventListener("click", () => deleteSpot(spot));
+      item.querySelector('[data-act="copylink"]').addEventListener("click", async () => {
+        const ok = await copyText(spotUrl);
+        showToast(ok ? "📋 Link tersalin: " + spotUrl : "⚠️ Gagal menyalin.");
+      });
+      item.querySelector('[data-act="downloadqr"]').addEventListener("click", () => downloadQr(spotUrl, spot.id));
       list.appendChild(item);
     });
 
@@ -519,21 +582,65 @@
     $("jsonPreview").textContent = jsonText();
   }
 
-  async function copyJson() {
-    const text = jsonText();
-    let ok = false;
+  async function copyText(text) {
     try {
       await navigator.clipboard.writeText(text);
-      ok = true;
+      return true;
     } catch (err) {
       const ta = document.createElement("textarea");
       ta.value = text;
       document.body.appendChild(ta);
       ta.select();
-      ok = document.execCommand("copy");
+      const ok = document.execCommand("copy");
       ta.remove();
+      return ok;
     }
+  }
+
+  async function copyJson() {
+    const ok = await copyText(jsonText());
     showToast(ok ? "📋 JSON tersalin! Tinggal tempel di GitHub." : "⚠️ Gagal menyalin, salin manual dari kotak di atas.");
+  }
+
+  /* ===== QR code ===== */
+  function makeQrDataUrl(url, size) {
+    if (typeof qrcode === "undefined") return null;
+    const qr = qrcode(0, "M");
+    qr.addData(url);
+    qr.make();
+    const count = qr.getModuleCount();
+    const margin = 4;
+    const cell = size / (count + margin * 2);
+    const canvas = document.createElement("canvas");
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext("2d");
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, size, size);
+    ctx.fillStyle = "#000000";
+    for (let r = 0; r < count; r++) {
+      for (let c = 0; c < count; c++) {
+        if (qr.isDark(r, c)) {
+          ctx.fillRect((c + margin) * cell, (r + margin) * cell, cell, cell);
+        }
+      }
+    }
+    return canvas.toDataURL("image/png");
+  }
+
+  function downloadQr(url, id) {
+    const dataUrl = makeQrDataUrl(url, 800);
+    if (!dataUrl) {
+      // Cadangan: buka QR beresolusi tinggi di tab baru untuk disimpan manual
+      window.open("https://api.qrserver.com/v1/create-qr-code/?size=800x800&data=" +
+        encodeURIComponent(url), "_blank", "noopener");
+      return;
+    }
+    const a = document.createElement("a");
+    a.href = dataUrl;
+    a.download = "qr-" + id + ".png";
+    a.click();
+    showToast("⬇️ QR code #" + id + " diunduh!");
   }
 
   function downloadJson() {

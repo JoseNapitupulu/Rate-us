@@ -4,8 +4,9 @@ Website untuk meminta ulasan & rating di Google Maps — bisa untuk **banyak tem
 
 ## ✨ Fitur
 
-- **Banyak tempat** — tiap tempat wisata punya link & halaman sendiri (cocok untuk QR code per tempat)
+- **Banyak tempat** — tiap tempat wisata punya link unik sendiri (`/#wisata-1`), otomatis bertambah tanpa file baru
 - **Panel Admin** (`admin.html`) — tambah/edit/hapus link tanpa perlu paham kode
+- **QR code per tempat** — di panel admin langsung ada QR code yang bisa discan & diunduh (PNG), siap dicetak untuk tiap lokasi
 - Desain modern & responsif (bisa dibuka dari HP)
 - Nama bisnis otomatis muncul dari Google saat pelanggan menulis ulasan
 - Halaman 404 custom + favicon bintang ⭐
@@ -13,8 +14,8 @@ Website untuk meminta ulasan & rating di Google Maps — bisa untuk **banyak tem
 ## 🗂️ Struktur Repo
 
 ```
-├── index.html    ← halaman depan: daftar semua tempat wisata
-├── spot.html     ← halaman khusus per tempat (spot.html?id=wisata-1) — untuk QR code
+├── index.html    ← halaman depan + halaman per tempat (via #wisata-1)
+├── spot.html     ← redirect otomatis dari link lama (spot.html?id=...) ke format baru
 ├── admin.html    ← PANEL ADMIN (dilindungi password)
 ├── spots.json    ← ⭐ data tempat wisata + link review (diubah lewat panel admin)
 ├── 404.html      ← halaman error custom
@@ -47,13 +48,19 @@ Cara dapat **Place ID**: buka [googleplaceidfinder.com](https://googleplaceidfin
 
 ## 🔗 Link & QR Code per Tempat
 
-Setiap tempat punya halaman sendiri: **`spot.html?id=wisata-1`** (id-nya sesuai `spots.json`).
+Setiap tempat punya **link unik otomatis**: `https://rating.ifs25026.fun/#wisata-1` (id-nya sesuai `spots.json`).
 
 Contoh untuk pelanggan:
-- Wisata 1 → `https://rating.ifs25026.fun/spot.html?id=wisata-1`
-- Wisata 2 → `https://rating.ifs25026.fun/spot.html?id=wisata-2`
+- Wisata 1 → `https://rating.ifs25026.fun/#wisata-1`
+- Wisata 2 → `https://rating.ifs25026.fun/#wisata-2`
 
-Link ini bisa diubah jadi **QR code** gratis (misal di qr-code-generator.com) untuk ditempel di meja kasir, papan informasi, atau tiket tiap wisata.
+### 🖨️ QR code siap cetak
+1. Buka **Panel Admin** (`/admin.html`)
+2. Di daftar tempat, tiap wisata sudah ada **QR code** yang menampilkan link halamannya
+3. Klik **⬇️ Unduh QR** → file PNG siap dicetak (stiker meja, papan info, tiket, dll)
+4. Link QR otomatis mengikuti tempat — tambah tempat baru pun QR-nya langsung muncul
+
+> Link lama format `spot.html?id=wisata-1` masih berfungsi (otomatis dialihkan ke `/#wisata-1`).
 
 ## 🚀 Deploy
 
