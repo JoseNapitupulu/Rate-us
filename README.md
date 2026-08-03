@@ -7,6 +7,7 @@ Website untuk meminta ulasan & rating di Google Maps — bisa untuk **banyak tem
 - **Banyak tempat** — tiap tempat wisata punya link unik sendiri (`/#wisata-1`), otomatis bertambah tanpa file baru
 - **Panel Admin** (`admin.html`) — tambah/edit/hapus link tanpa perlu paham kode
 - **QR code per tempat** — di panel admin langsung ada QR code yang bisa discan & diunduh (PNG), siap dicetak untuk tiap lokasi
+- **Selipan Instagram** (@werinho.studio) — link kecil di halaman rating tiap wisata untuk reach customer yang tertarik layanan serupa
 - Desain modern & responsif (bisa dibuka dari HP)
 - Nama bisnis otomatis muncul dari Google saat pelanggan menulis ulasan
 - Halaman 404 custom + favicon bintang ⭐
