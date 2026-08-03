@@ -296,29 +296,6 @@
   }
   .not-found .btn-home:hover { transform: translateY(-2px); }
 
-  /* Tombol kecil ke panel admin */
-  .admin-gear {
-    position: fixed;
-    right: 18px;
-    bottom: 18px;
-    z-index: 5;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.85);
-    border: 1px solid rgba(32, 33, 36, 0.12);
-    box-shadow: 0 6px 16px -6px rgba(32, 33, 36, 0.25);
-    font-size: 18px;
-    text-decoration: none;
-    color: var(--muted);
-    opacity: 0.75;
-    transition: opacity 0.18s ease, transform 0.18s ease;
-  }
-  .admin-gear:hover { opacity: 1; transform: rotate(45deg) scale(1.08); }
-
   /* Toast */
   .toast {
     position: fixed;
@@ -427,7 +404,6 @@
     <a class="btn-home" href="./">← Kembali ke Beranda</a>
   </main>
 
-  <a class="admin-gear" href="admin.html" title="Panel Admin" aria-label="Panel Admin">⚙️</a>
   <div id="toast" class="toast" role="alert"></div>
 
 <script>
