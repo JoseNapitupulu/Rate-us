@@ -2,18 +2,18 @@
   "spots": [
     {
       "id": "wisata-1",
-      "name": "Wisata 1",
-      "link": "https://search.google.com/local/writereview?placeid=YOUR_PLACE_ID_1"
+      "name": "Rogate Beach Hotel",
+      "link": "https://www.google.com/maps/place/Rogate+Beach+Hotel/@2.6943127,98.8172228,884m/data=!3m1!1e3!4m11!3m10!1s0x3031c1c434ef8711:0x16e9b3316cc597d0!5m2!4m1!1i2!8m2!3d2.6943127!4d98.8197977!9m1!1b1!16s%2Fg%2F11ckvkjlgx?entry=ttu&g_ep=EgoyMDI2MDcyOS4wIKXMDSoASAFQAw%3D%3D"
     },
     {
       "id": "wisata-2",
-      "name": "Wisata 2",
-      "link": "https://search.google.com/local/writereview?placeid=YOUR_PLACE_ID_2"
+      "name": "Rogate Beach Hotel",
+      "link": "https://www.google.com/maps/place/Rogate+Beach+Hotel/@2.6943127,98.8172228,884m/data=!3m1!1e3!4m11!3m10!1s0x3031c1c434ef8711:0x16e9b3316cc597d0!5m2!4m1!1i2!8m2!3d2.6943127!4d98.8197977!9m1!1b1!16s%2Fg%2F11ckvkjlgx?entry=ttu&g_ep=EgoyMDI2MDcyOS4wIKXMDSoASAFQAw%3D%3D"
     },
     {
       "id": "wisata-3",
-      "name": "Wisata 3",
-      "link": "https://search.google.com/local/writereview?placeid=YOUR_PLACE_ID_3"
+      "name": "Rogate Beach Hotel",
+      "link": "https://www.google.com/maps/place/Rogate+Beach+Hotel/@2.6943127,98.8172228,884m/data=!3m1!1e3!4m11!3m10!1s0x3031c1c434ef8711:0x16e9b3316cc597d0!5m2!4m1!1i2!8m2!3d2.6943127!4d98.8197977!9m1!1b1!16s%2Fg%2F11ckvkjlgx?entry=ttu&g_ep=EgoyMDI2MDcyOS4wIKXMDSoASAFQAw%3D%3D"
     }
   ]
 }
