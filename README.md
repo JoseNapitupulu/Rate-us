@@ -66,20 +66,6 @@ Contoh: `https://budi123.github.io/rate-us/`
 2. Ganti `YOUR_PLACE_ID`
 3. Klik **Commit changes** — perubahan langsung aktif otomatis
 
-## 🌐 Custom Domain (rate.ifs25026.fun)
-
-Repomu sudah memakai custom domain **`rate.ifs25026.fun`** (file `CNAME`).
-
-### Cara mengaktifkannya (kalau belum)
-1. Buka panel DNS domain `ifs25026.fun` di penyedia domainmu
-2. Tambahkan salah satu:
-   - **CNAME record**: `rate` → `josenapitupulu.github.io`
-   - **atau 4 A records**: `@` → `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`
-3. Simpan, lalu tunggu **10 menit – 24 jam** sampai DNS menyebar
-4. Pastikan di **Settings → Pages → Custom domain** terisi `rate.ifs25026.fun`, dan aktifkan **Enforce HTTPS** setelah DNS aktif
-
-> ⚠️ Selama DNS belum diarahkan, website tetap bisa diakses lewat **https://josenapitupulu.github.io/Rate-us/**
-
 ## 📱 Bagikan ke Pelanggan
 
 Bagikan URL GitHub Pages-mu lewat:
